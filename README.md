@@ -91,6 +91,8 @@ docker compose -f compose.dev.yaml up              # app on :8000, Mailpit on :8
 Use the interactive wizard at http://localhost:8000/admin/install; the default password is
 `devinstall` in `compose.dev.yaml`, unless you overrode it by setting `INSTALL_PASSWORD`.
 
+See [docs/deploy.md#development-with-containers](https://github.com/eurofurence/crittersystem2.0/blob/main/docs/deploy.md#development-with-containers) for further information on development with containers.
+
 ### Checks
 
 ```bash
