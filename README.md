@@ -46,12 +46,16 @@ the importmap.
 
 Requires PHP 8.4, Composer, and Docker (for PostgreSQL).
 
-### Install dependencies
+### Set up and start
+
+You can either run the commands manually to set up, or use the provided docker compose file.
+
+#### Manual
+
+##### Install dependencies
 
 ```bash
 composer install
-php bin/console importmap:install                  # vendored JS/CSS
-php bin/console tailwind:build                     # bundle tailwind
 ```
 
 If `composer install` fails with an out-of-memory error, increase your cli memory limit to let the
@@ -60,11 +64,7 @@ If `composer install` fails with an out-of-memory error, increase your cli memor
 - `php --ini` and look for the line ending `php.ini`
 - edit that file, increasing the `memory_limit` line (512M should suffice)
 
-### Set up and start
-
-You can either run the commands manually to set up, or use the provided docker compose file.
-
-#### Manual
+##### Start and configure
 
 ```bash
 docker start critter-pg 2>/dev/null || docker run -d --name critter-pg \
@@ -72,9 +72,9 @@ docker start critter-pg 2>/dev/null || docker run -d --name critter-pg \
   -p 127.0.0.1:5432:5432 postgres:16-alpine
 
 php bin/console doctrine:migrations:migrate
-php bin/console app:install                        # seed groups/privileges + first admin
+php bin/console app:install                                  # seed groups/privileges + first admin
 
-symfony serve -d --no-tls --port=8000              # http://127.0.0.1:8000
+symfony serve -d --no-tls --port=8000                        # http://127.0.0.1:8000
 ```
 
 `app:install` prints a generated admin password (or accepts your own). Root `/` redirects guests to
@@ -82,23 +82,23 @@ symfony serve -d --no-tls --port=8000              # http://127.0.0.1:8000
 
 #### Docker compose
 
-note: run 'install dependencies' commands first
-
 ```bash
-docker compose -f compose.dev.yaml up              # app on :8000, Mailpit on :8025
+docker compose -f compose.dev.yaml up                        # app on :8000, Mailpit on :8025
+docker compose -f compose.dev.yaml exec app composer install # first run / fresh checkout
 ```
 
 Use the interactive wizard at http://localhost:8000/admin/install; the default password is
 `devinstall` in `compose.dev.yaml`, unless you overrode it by setting `INSTALL_PASSWORD`.
 
-See [docs/deploy.md#development-with-containers](https://github.com/eurofurence/crittersystem2.0/blob/main/docs/deploy.md#development-with-containers) for further information on development with containers.
+See [docs/deploy.md#development-with-containers](./docs/deploy.md#development-with-containers)
+for further information on development with containers.
 
 ### Checks
 
 ```bash
-php bin/phpunit                                    # the test suite (787 tests; run it alone)
-npm test                                           # Stimulus controller tests (vitest)
-php bin/phpunit --testsuite Browser                # real-browser tests (Panther; see docs/testing.md)
+php bin/phpunit                                              # the test suite (787 tests; run it alone)
+npm test                                                     # Stimulus controller tests (vitest)
+php bin/phpunit --testsuite Browser                          # real-browser tests (Panther; see docs/testing.md)
 php bin/console lint:twig templates
 php bin/console lint:container
 ```
